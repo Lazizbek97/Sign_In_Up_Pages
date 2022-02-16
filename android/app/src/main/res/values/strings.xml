@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Isgn Up Page</string>
+    <string name="facebook_app_id">346152687377606</string>
+    <string name="fb_login_protocol_scheme">fb346152687377606</string>
+    <string name="facebook_client_token">b9b497d6e983df09ed19560e3dd17d3e</string>
+</resources>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_up_page/screens/home_page.dart/home_page.dart';
 import '../../service/sign_in_up_Service.dart';
@@ -6,7 +7,6 @@ import '../sign_in_page/sign_in_page.dart';
 
 class SignUpPage extends StatelessWidget {
   SignUpPage({Key? key}) : super(key: key);
-  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
@@ -80,12 +80,6 @@ class SignUpPage extends StatelessWidget {
                       ),
                     ),
                     TextFormField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(
-                        labelText: "Full Name",
-                      ),
-                    ),
-                    TextFormField(
                       controller: _usernameController,
                       decoration: const InputDecoration(
                         labelText: "Username",
@@ -141,6 +135,60 @@ class SignUpPage extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20))),
                       ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            context
+                                .read<SignInUpService>()
+                                .facebookSignin()
+                                .then(
+                              (value) {
+                                print("shu yerga keladi qarab tur");
+                                print(value);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const HomePage(),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: const CircleAvatar(
+                            backgroundColor: Colors.black,
+                            child: FaIcon(
+                              FontAwesomeIcons.facebook,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: InkWell(
+                            onTap: () {},
+                            child: const CircleAvatar(
+                              backgroundColor: Colors.black,
+                              child: FaIcon(
+                                FontAwesomeIcons.twitter,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: const CircleAvatar(
+                            backgroundColor: Colors.black,
+                            child: FaIcon(
+                              FontAwesomeIcons.github,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
