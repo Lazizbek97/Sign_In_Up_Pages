@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:sign_up_page/auth_wrapper.dart';
 import 'package:sign_up_page/screens/home_page.dart/home_page.dart';
 import '../../service/sign_in_up_Service.dart';
 import '../sign_in_page/sign_in_page.dart';
@@ -106,15 +107,15 @@ class SignUpPage extends StatelessWidget {
                               .singUP(
                                 email: _emailController.text,
                                 password: _passwordController.text,
+                                name: _usernameController.text,
                               )
                               .then(
                                 (value) => value == 'sign up'
-                                    ? Navigator.pushAndRemoveUntil(
+                                    ? Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (_) => const HomePage(),
+                                          builder: (_) => const AuthWrapper(),
                                         ),
-                                        (route) => false,
                                       )
                                     : ScaffoldMessenger.of(context)
                                         .showSnackBar(
@@ -143,19 +144,22 @@ class SignUpPage extends StatelessWidget {
                           onTap: () {
                             context
                                 .read<SignInUpService>()
-                                .facebookSignin()
-                                .then(
-                              (value) {
-                                print("shu yerga keladi qarab tur");
-                                print(value);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const HomePage(),
-                                  ),
-                                );
-                              },
-                            );
+                                .signInWithFacebook()
+                                .then((value) => value == 'Successfully loged!'
+                                    ? Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => AuthWrapper(),
+                                        ),
+                                      )
+                                    : ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            value.toString(),
+                                          ),
+                                        ),
+                                      ));
                           },
                           child: const CircleAvatar(
                             backgroundColor: Colors.black,

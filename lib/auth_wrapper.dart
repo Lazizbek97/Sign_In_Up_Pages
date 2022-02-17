@@ -12,7 +12,7 @@ class AuthWrapper extends StatelessWidget {
     final fireBaseUser = context.watch<SignInUpService>();
     print(fireBaseUser.fireBaseAuth.currentUser);
     if (fireBaseUser.fireBaseAuth.currentUser != null) {
-      return const HomePage();
+      return HomePage();
     } else {
       return SignInPage();
     }

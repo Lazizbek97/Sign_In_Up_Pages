@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sign_up_page/screens/home_page.dart/home_page.dart';
 import 'package:sign_up_page/screens/sign_up_page.dart/sign_up_page.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_up_page/service/sign_in_up_Service.dart';
@@ -167,12 +166,13 @@ class SignInPage extends StatelessWidget {
                                 .read<SignInUpService>()
                                 .signInWithGoogle()
                                 .then(
-                                  (value) => Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const HomePage(),
+                                  (value) => ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        "Successfully loged in",
+                                      ),
                                     ),
-                                    (route) => false,
                                   ),
                                 );
                           },

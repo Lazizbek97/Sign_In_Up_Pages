@@ -1,9 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:github_sign_in/github_sign_in.dart';
-
 
 class SignInUpService extends ChangeNotifier {
   late final FirebaseAuth fireBaseAuth;
@@ -14,7 +13,9 @@ class SignInUpService extends ChangeNotifier {
 
   Stream<User?> get authChanges => fireBaseAuth.authStateChanges();
 
-  Future signOut() async {
+  Future signOutUser() async {
+    notifyListeners();
+
     await fireBaseAuth.signOut();
     notifyListeners();
   }
@@ -32,14 +33,16 @@ class SignInUpService extends ChangeNotifier {
     }
   }
 
-  Future<String?> singUP({String? email, String? password}) async {
+  Future<String?> singUP(
+      {String? email, String? password, String? name}) async {
     try {
-      notifyListeners();
-
       curUser = await fireBaseAuth.createUserWithEmailAndPassword(
         email: email!,
         password: password!,
       );
+      User? user = curUser.user;
+      await user!.updateDisplayName(name);
+
       notifyListeners();
 
       return "sign up";
@@ -52,7 +55,7 @@ class SignInUpService extends ChangeNotifier {
 
   // ? Google Sign in Credintials
 
-  Future<UserCredential> signInWithGoogle() async {
+  Future signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -65,58 +68,37 @@ class SignInUpService extends ChangeNotifier {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
+    await FirebaseAuth.instance.signInWithCredential(credential);
 
     notifyListeners();
-    print("shu yerdan pasta");
-
-    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
   // ? Facebook Sign In
 
-  // Future<UserCredential> signInWithFacebook() async {
-  //   // Trigger the sign-in flow
-  //   final LoginResult loginResult = await FacebookAuth.instance.login();
-
-  //   // Create a credential from the access token
-  //   final OAuthCredential facebookAuthCredential =
-  //       FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-  //   // Once signed in, return the UserCredential
-  //   // FirebaseAuth.instance.signInWithCredential(facebookAuthCredential).then(
-  //   //       (value) => print(value),
-  //       // );
-  //   return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-  // }
-
-  Future<String?> facebookSignin() async {
+  Future<String?> signInWithFacebook() async {
     try {
-      final _instance = FacebookAuth.instance;
-      final result = await _instance.login(permissions: ['email']);
-      if (result.status == LoginStatus.success) {
-        final OAuthCredential credential =
-            FacebookAuthProvider.credential(result.accessToken!.token);
-        final a = await fireBaseAuth.signInWithCredential(credential);
-        await _instance.getUserData().then((userData) async {
-          await fireBaseAuth.currentUser!.updateEmail(userData['email']);
-        });
-        print("if 1 qismi");
-        return null;
-      } else if (result.status == LoginStatus.cancelled) {
-        print("if 2 qismi");
+      // Trigger the sign-in flow
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+      final userData = await FacebookAuth.instance.getUserData();
 
-        return 'Login cancelled';
-      } else {
-        print("if 3 qismi");
+      // Create a credential from the access token
+      final OAuthCredential facebookAuthCredential =
+          FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
-        return 'Error';
-      }
-    } catch (e) {
-      print("if 4 qismi");
+      await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
 
-      return e.toString();
+      await FirebaseFirestore.instance.collection("users").add({
+        'email': userData['email'],
+        'imageUrl': userData['picture']['data']['url'],
+        'name': userData['name'],
+      });
+
+      return "Successfully loged!";
+    } on FirebaseAuthException catch (e) {
+      var title = "You've used this email already, try with another social media or email";
+      print(e.code);
+      return title;
+    } finally {
+      notifyListeners();
     }
   }
-// ?---------------------------
-
-
 }
