@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:github_sign_in/github_sign_in.dart';
 
 class SignInUpService extends ChangeNotifier {
   late final FirebaseAuth fireBaseAuth;
@@ -93,12 +95,38 @@ class SignInUpService extends ChangeNotifier {
       });
 
       return "Successfully loged!";
-    } on FirebaseAuthException catch (e) {
-      var title = "You've used this email already, try with another social media or email";
-      print(e.code);
+    } on FirebaseAuthException {
+      var title =
+          "You've used this email already, try with another social media or email";
       return title;
     } finally {
       notifyListeners();
+    }
+  }
+  // ? GitHub Auth login
+
+  Future signInWithGitHub(context) async {
+    String clientId = '5dd8a721c9f95a5072e8';
+    String clientSecret = '3abcb5432cede22c90d04c12bb15f2f9d1ca9ed8';
+    try {
+      // Create a GitHubSignIn instance
+      final GitHubSignIn gitHubSignIn = GitHubSignIn(
+          clientId: clientId,
+          clientSecret: clientSecret,
+          redirectUrl:
+              'https://signup-page-2531d.firebaseapp.com/__/auth/handler');
+
+      // Trigger the sign-in flow
+      final result = await gitHubSignIn.signIn(context);
+
+      // Create a credential from the access token
+      final githubAuthCredential = GithubAuthProvider.credential(result.token);
+
+      // Once signed in, return the UserCredential
+      await FirebaseAuth.instance.signInWithCredential(githubAuthCredential);
+      return 'Successfully loged!';
+    } catch (e) {
+      return "This email has been already used";
     }
   }
 }

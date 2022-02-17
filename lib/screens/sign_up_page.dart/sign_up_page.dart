@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sign_up_page/auth_wrapper.dart';
-import 'package:sign_up_page/screens/home_page.dart/home_page.dart';
 import '../../service/sign_in_up_Service.dart';
 import '../sign_in_page/sign_in_page.dart';
 
@@ -149,7 +148,7 @@ class SignUpPage extends StatelessWidget {
                                     ? Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (_) => AuthWrapper(),
+                                          builder: (_) => const AuthWrapper(),
                                         ),
                                       )
                                     : ScaffoldMessenger.of(context)
@@ -183,7 +182,26 @@ class SignUpPage extends StatelessWidget {
                           ),
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            context
+                                .read<SignInUpService>()
+                                .signInWithGitHub(context)
+                                .then((value) => value == 'Successfully loged!'
+                                    ? Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const AuthWrapper(),
+                                        ),
+                                      )
+                                    : ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            value.toString(),
+                                          ),
+                                        ),
+                                      ));
+                          },
                           child: const CircleAvatar(
                             backgroundColor: Colors.black,
                             child: FaIcon(
