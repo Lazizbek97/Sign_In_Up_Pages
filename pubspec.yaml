@@ -42,6 +42,7 @@ dependencies:
   flutter_facebook_auth: ^4.0.1
   github_sign_in: ^0.0.4
   cloud_firestore: ^3.1.8
+  twitter_login: ^4.0.1
 
 dev_dependencies:
   flutter_test:

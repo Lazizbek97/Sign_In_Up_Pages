@@ -144,21 +144,23 @@ class SignUpPage extends StatelessWidget {
                             context
                                 .read<SignInUpService>()
                                 .signInWithFacebook()
-                                .then((value) => value == 'Successfully loged!'
-                                    ? Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => const AuthWrapper(),
-                                        ),
-                                      )
-                                    : ScaffoldMessenger.of(context)
-                                        .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            value.toString(),
+                                .then(
+                                  (value) => value == 'Successfully loged!'
+                                      ? Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => const AuthWrapper(),
+                                          ),
+                                        )
+                                      : ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              value.toString(),
+                                            ),
                                           ),
                                         ),
-                                      ));
+                                );
                           },
                           child: const CircleAvatar(
                             backgroundColor: Colors.black,
@@ -171,7 +173,27 @@ class SignUpPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () async {
+                              await context
+                                  .read<SignInUpService>()
+                                  .signInWithTwitter()
+                                  .then((value) => value ==
+                                          'Successfully loged!'
+                                      ? Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => const AuthWrapper(),
+                                          ),
+                                        )
+                                      : ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              value.toString(),
+                                            ),
+                                          ),
+                                        ));
+                            },
                             child: const CircleAvatar(
                               backgroundColor: Colors.black,
                               child: FaIcon(

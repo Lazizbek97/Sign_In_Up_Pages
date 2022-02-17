@@ -5,6 +5,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:github_sign_in/github_sign_in.dart';
+import 'package:twitter_login/twitter_login.dart';
 
 class SignInUpService extends ChangeNotifier {
   late final FirebaseAuth fireBaseAuth;
@@ -35,8 +36,11 @@ class SignInUpService extends ChangeNotifier {
     }
   }
 
-  Future<String?> singUP(
-      {String? email, String? password, String? name}) async {
+  Future<String?> singUP({
+    String? email,
+    String? password,
+    String? name,
+  }) async {
     try {
       curUser = await fireBaseAuth.createUserWithEmailAndPassword(
         email: email!,
@@ -128,5 +132,34 @@ class SignInUpService extends ChangeNotifier {
     } catch (e) {
       return "This email has been already used";
     }
+  }
+  // ? Twitter Auth login
+
+  Future signInWithTwitter() async {
+    String apiKeyTwitter = 'SUch918yg5siCqblLhnKWQxMu';
+    String apiSecretkeyTwitter =
+        'gDhiY8r3wUOyrnHwmuT9R1eKalkZhruBIeXWMLMPQYAiyNm6v9';
+    String redirectURI =
+        'https://signup-page-2531d.firebaseapp.com/__/auth/handler';
+
+    // Create a TwitterLogin instance
+    final twitterLogin = TwitterLogin(
+      apiKey: apiKeyTwitter,
+      apiSecretKey: apiSecretkeyTwitter,
+      redirectURI: redirectURI,
+    );
+
+    // Trigger the sign-in flow
+    final authResult = await twitterLogin.login();
+
+    // Create a credential from the access token
+    final twitterAuthCredential = TwitterAuthProvider.credential(
+      accessToken: authResult.authToken!,
+      secret: authResult.authTokenSecret!,
+    );
+
+    // Once signed in, return the UserCredential
+    await FirebaseAuth.instance.signInWithCredential(twitterAuthCredential);
+    return "Successfully loged!";
   }
 }
