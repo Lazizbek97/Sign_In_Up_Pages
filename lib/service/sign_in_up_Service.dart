@@ -110,15 +110,14 @@ class SignInUpService extends ChangeNotifier {
   // ? GitHub Auth login
 
   Future signInWithGitHub(context) async {
-    String clientId = '5dd8a721c9f95a5072e8';
-    String clientSecret = '3abcb5432cede22c90d04c12bb15f2f9d1ca9ed8';
+    String clientId = 'client id';
+    String clientSecret = 'client secret';
     try {
       // Create a GitHubSignIn instance
       final GitHubSignIn gitHubSignIn = GitHubSignIn(
           clientId: clientId,
           clientSecret: clientSecret,
-          redirectUrl:
-              'https://signup-page-2531d.firebaseapp.com/__/auth/handler');
+          redirectUrl: 'redirect uri');
 
       // Trigger the sign-in flow
       final result = await gitHubSignIn.signIn(context);
@@ -136,11 +135,9 @@ class SignInUpService extends ChangeNotifier {
   // ? Twitter Auth login
 
   Future signInWithTwitter() async {
-    String apiKeyTwitter = 'SUch918yg5siCqblLhnKWQxMu';
-    String apiSecretkeyTwitter =
-        'gDhiY8r3wUOyrnHwmuT9R1eKalkZhruBIeXWMLMPQYAiyNm6v9';
-    String redirectURI =
-        'https://signup-page-2531d.firebaseapp.com/__/auth/handler';
+    String apiKeyTwitter = 'api key';
+    String apiSecretkeyTwitter = 'api secret key';
+    String redirectURI = 'redirect uri';
 
     // Create a TwitterLogin instance
     final twitterLogin = TwitterLogin(
